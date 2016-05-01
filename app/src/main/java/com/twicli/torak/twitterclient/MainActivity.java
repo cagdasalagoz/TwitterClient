@@ -37,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     static final String PREF_KEY_OAUTH_SECRET = "oauth_token_secret";
     static final String PREF_KEY_TWITTER_LOGIN = "isTwitterLogedIn";
 
-    static final String TWITTER_CALLBACK_URL = "https://www.twitter.com/";
+    static final String TWITTER_CALLBACK_URL = "oauth://t4jsample";
 
     // Twitter oauth urls
     static final String URL_TWITTER_AUTH = " https://api.twitter.com/oauth/authorize";
@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View arg0) {
                 // Call login twitter function
-                AsyncCallWS task = new AsyncCallWS();
+                loginAsync task = new loginAsync();
                 task.execute();
             }
         });
@@ -106,7 +106,7 @@ public class MainActivity extends AppCompatActivity {
                             accessToken.getTokenSecret());
                     // Store login status - true
                     e.putBoolean(PREF_KEY_TWITTER_LOGIN, true);
-                    e.commit(); // save changes
+                    e.apply(); // save changes
 
                     Log.e("Twitter OAuth Token", "> " + accessToken.getToken());
 
@@ -156,8 +156,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-
-    private class AsyncCallWS extends AsyncTask<Void, Void, Void> {
+    private class loginAsync extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
             Log.i("async", "doInBackground");
@@ -168,6 +167,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void result) {
             Log.i("async", "onPostExecute");
+
         }
 
         @Override
@@ -178,6 +178,71 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onProgressUpdate(Void... values) {
             Log.i("async", "onProgressUpdate");
+        }
+
+    }
+
+    /**
+     * Function to update status
+     * */
+    class updateTwitterStatus extends AsyncTask<String, String, String> {
+
+        /**
+         * Before starting background thread Show Progress Dialog
+         * */
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            Toast.makeText(getApplicationContext(),
+                    "sending", Toast.LENGTH_LONG).show();
+        }
+
+        /**
+         * getting Places JSON
+         * */
+        protected String doInBackground(String... args) {
+            Log.d("Tweet Text", "> " + args[0]);
+            String status = args[0];
+            try {
+                ConfigurationBuilder builder = new ConfigurationBuilder();
+                builder.setOAuthConsumerKey(TWITTER_CONSUMER_KEY);
+                builder.setOAuthConsumerSecret(TWITTER_CONSUMER_SECRET);
+
+                // Access Token
+                String access_token = mSharedPreferences.getString(PREF_KEY_OAUTH_TOKEN, "");
+                // Access Token Secret
+                String access_token_secret = mSharedPreferences.getString(PREF_KEY_OAUTH_SECRET, "");
+
+                AccessToken accessToken = new AccessToken(access_token, access_token_secret);
+                Twitter twitter = new TwitterFactory(builder.build()).getInstance(accessToken);
+
+                // Update status
+                twitter4j.Status response = twitter.updateStatus(status);
+
+                Log.d("Status", "> " + response.getText());
+            } catch (TwitterException e) {
+                // Error in updating status
+                Log.d("Twitter Update Error", e.getMessage());
+            }
+            return null;
+        }
+
+        /**
+         * After completing background task Dismiss the progress dialog and show
+         * the data in UI Always use runOnUiThread(new Runnable()) to update UI
+         * from background thread, otherwise you will get error
+         * **/
+        protected void onPostExecute(String file_url) {
+
+            // updating UI from Background Thread
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    Toast.makeText(getApplicationContext(),
+                            "Status tweeted successfully", Toast.LENGTH_SHORT)
+                            .show();
+                }
+            });
         }
 
     }
