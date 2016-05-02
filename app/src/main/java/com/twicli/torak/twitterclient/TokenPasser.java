@@ -4,9 +4,9 @@ import twitter4j.Twitter;
 import twitter4j.auth.RequestToken;
 
 /**
- * Created by torak on 5/2/16.
+ * Created by cagdasalagoz on 5/2/16.
  */
-public class TokenPasser {
+class TokenPasser {
 
     private static RequestToken requestToken;
 

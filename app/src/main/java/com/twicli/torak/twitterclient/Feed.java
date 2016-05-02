@@ -1,13 +1,11 @@
 package com.twicli.torak.twitterclient;
 
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -29,21 +27,12 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class Feed extends AppCompatActivity {
 
-    // Preference Constants
-    static String PREFERENCE_NAME = "twitter_oauth";
-    static final String PREF_KEY_OAUTH_TOKEN = "oauth_token";
-    static final String PREF_KEY_OAUTH_SECRET = "oauth_token_secret";
-    static final String PREF_KEY_TWITTER_LOGIN = "isTwitterLogedIn";
+    private static final String TWITTER_CALLBACK_URL = "oauth://t4jsample";
 
-    static final String TWITTER_CALLBACK_URL = "oauth://t4jsample";
+    private static final String URL_TWITTER_OAUTH_VERIFIER = "oauth_verifier";
 
-    // Twitter oauth urls
-    static final String URL_TWITTER_AUTH = "https://api.twitter.com/oauth/authorize";
-    static final String URL_TWITTER_OAUTH_VERIFIER = "oauth_verifier";
-    static final String URL_TWITTER_OAUTH_TOKEN = "https://api.twitter.com/oauth/access_token";
-
-    ListView listView;
-    List<FeedListClass> posts =new ArrayList<>();
+    private ListView listView;
+    private final List<FeedListClass> posts =new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -100,7 +89,7 @@ public class Feed extends AppCompatActivity {
 
     }
 
-    public void savePrefs(){
+    private void savePrefs(){
         RequestToken requestToken = TokenPasser.getRequestToken();
         Twitter twitter = TokenPasser.getTwitter();
 
@@ -132,7 +121,7 @@ public class Feed extends AppCompatActivity {
                 // store them in application preferences
                 Log.e("feed", "saving user keys");
                 SharedPreferenceEditor.setUserKeys(Feed.this,accessToken.getToken(),accessToken.getTokenSecret());
-                SharedPreferenceEditor.setIsLogedIn(Feed.this,true);
+                SharedPreferenceEditor.setIsLogedIn(Feed.this);
 
                 Log.e("Twitter OAuth Token", "> " + accessToken.getToken());
             }catch (TwitterException te) {
@@ -173,7 +162,7 @@ public class Feed extends AppCompatActivity {
 
     }
 
-    public void getFeed(){
+    private void getFeed(){
         //region get the feed
 
 

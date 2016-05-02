@@ -1,9 +1,9 @@
 package com.twicli.torak.twitterclient;
 
 /**
- * Created by torak on 5/2/16.
+ * Created by cagdasalagoz on 5/2/16.
  */
-public class FeedListClass {
+class FeedListClass {
     private String listName,postContent;
 
 
@@ -22,16 +22,8 @@ public class FeedListClass {
         return listName;
     }
 
-    public void setListName(String listName) {
-        this.listName = listName;
-    }
-
     public String getPostContent() {
         return postContent;
-    }
-
-    public void setPostContent(String postContent) {
-        this.postContent = postContent;
     }
 
 

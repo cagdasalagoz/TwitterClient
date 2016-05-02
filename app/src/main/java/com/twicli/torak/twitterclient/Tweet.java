@@ -1,11 +1,7 @@
 package com.twicli.torak.twitterclient;
 
-import android.app.ProgressDialog;
-import android.content.SharedPreferences;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -22,16 +18,9 @@ import twitter4j.conf.ConfigurationBuilder;
 
 public class Tweet extends AppCompatActivity {
 
-    // Shared Preferences
-    private static SharedPreferences mSharedPreferences;
 
-    // Preference Constants
-    static String PREFERENCE_NAME = "twitter_oauth";
-    static final String PREF_KEY_OAUTH_TOKEN = "oauth_token";
-    static final String PREF_KEY_OAUTH_SECRET = "oauth_token_secret";
-    static final String PREF_KEY_TWITTER_LOGIN = "isTwitterLogedIn";
-
-    EditText edTweet;
+    public static EditText edTweet;
+    public static String status;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +37,7 @@ public class Tweet extends AppCompatActivity {
             public void onClick(View v) {
                 // Call update status function
                 // Get the status from EditText
-                String status = edTweet.getText().toString();
+                status = edTweet.getText().toString();
 
                 // Check for blank text
                 if (status.trim().length() > 0) {
@@ -69,7 +58,7 @@ public class Tweet extends AppCompatActivity {
     /**
      * Function to update status
      * */
-    class updateTwitterStatus extends AsyncTask<String, String, String> {
+    private class updateTwitterStatus extends AsyncTask<String, String, String> {
 
         /**
          * Before starting background thread Show Progress Dialog
@@ -87,13 +76,11 @@ public class Tweet extends AppCompatActivity {
          * */
         protected String doInBackground(String... args) {
             Log.d("Tweet Text", "> " + args[0]);
-            String status = args[0];
+
             try {
                 ConfigurationBuilder builder = new ConfigurationBuilder();
                 builder.setOAuthConsumerKey(getString(R.string.consumer_key));
                 builder.setOAuthConsumerSecret(getString(R.string.consumer_secret));
-
-
 
                 // Access Token
                 String access_token = SharedPreferenceEditor.getUserToken(Tweet.this);
@@ -104,7 +91,7 @@ public class Tweet extends AppCompatActivity {
                 Twitter twitter = new TwitterFactory(builder.build()).getInstance(accessToken);
 
                 // Update status
-                twitter4j.Status response = twitter.updateStatus("hhggdeneme");
+                twitter4j.Status response = twitter.updateStatus(status);
 
                 Log.d("Status", "> " + response.getText());
             } catch (TwitterException e) {

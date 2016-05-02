@@ -5,4 +5,10 @@
 
     <string name="consumer_key">KskDzgH24eBO2SAXVBTzob2kA</string>
     <string name="consumer_secret">umRfZD0vM3E1MxviAvNrXAJv3OvFqNVnSQYUfDeSV6cEyzVxGa</string>
+
+    <string name="loginWithTwitter">Login with Twitter</string>
+    <string name="header">header</string>
+    <string name="tweethint">What do you want to share?</string>
+    <string name="about">about</string>
+    <string name="sendTweet">Send Tweet</string>
 </resources>

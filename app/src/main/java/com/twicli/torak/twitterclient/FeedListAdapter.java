@@ -6,24 +6,23 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
 
 /**
- * Created by torak on 5/2/16.
+ * Created by cagdasalagoz on 5/2/16.
  */
-public class FeedListAdapter  extends BaseAdapter {
+class FeedListAdapter  extends BaseAdapter {
 
-    private LayoutInflater mInflater;
-    private List<FeedListClass> posts_list;
+    private final LayoutInflater mInflater;
+    private final List<FeedListClass> posts_list;
 
     public FeedListAdapter(AppCompatActivity activity, List<FeedListClass> kisiler) {
-        //XML'i alıp View'a çevirecek inflater'ı örnekleyelim
+
         mInflater = (LayoutInflater) activity.getSystemService(
                 Context.LAYOUT_INFLATER_SERVICE);
-        //gösterilecek listeyi de alalım
+
         posts_list = kisiler;
     }
 

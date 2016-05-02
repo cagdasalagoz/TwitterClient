@@ -6,7 +6,6 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.Html;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -17,39 +16,16 @@ import twitter4j.Twitter;
 import twitter4j.auth.RequestToken;
 import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
-import twitter4j.User;
-import twitter4j.auth.AccessToken;
 import twitter4j.conf.Configuration;
 import twitter4j.conf.ConfigurationBuilder;
 
 public class MainActivity extends AppCompatActivity {
 
     // Constants
-    /**
-     * Register your here app https://dev.twitter.com/apps/new and get your
-     * consumer key and secret
-     * */
 
-    public static Bundle mMyAppsBundle = new Bundle();
+    private static final String PREF_KEY_TWITTER_LOGIN = "isTwitterLogedIn";
 
-    // Preference Constants
-    static String PREFERENCE_NAME = "twitter_oauth";
-    static final String PREF_KEY_OAUTH_TOKEN = "oauth_token";
-    static final String PREF_KEY_OAUTH_SECRET = "oauth_token_secret";
-    static final String PREF_KEY_TWITTER_LOGIN = "isTwitterLogedIn";
-
-    static final String TWITTER_CALLBACK_URL = "oauth://t4jsample";
-
-    // Twitter oauth urls
-    static final String URL_TWITTER_AUTH = " https://api.twitter.com/oauth/authorize";
-    static final String URL_TWITTER_OAUTH_VERIFIER = "oauth_verifier";
-    static final String URL_TWITTER_OAUTH_TOKEN = " https://api.twitter.com/oauth/access_token";
-
-    Button btnTweet,btnLogin;
-    EditText editTextTweet;
-
-    private static Twitter twitter;
-    private  static RequestToken requestToken;
+    private static final String TWITTER_CALLBACK_URL = "oauth://t4jsample";
 
     // Shared Preferences
     private static SharedPreferences mSharedPreferences;
@@ -69,9 +45,9 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
 
-        btnLogin = (Button) findViewById(R.id.login_btn);
-        btnTweet = (Button) findViewById(R.id.tweet_button);
-        editTextTweet = (EditText) findViewById(R.id.tweet_editText);
+        Button btnLogin = (Button) findViewById(R.id.login_btn);
+        Button btnTweet = (Button) findViewById(R.id.tweet_button);
+        EditText editTextTweet = (EditText) findViewById(R.id.tweet_editText);
 
         mSharedPreferences = getApplicationContext().getSharedPreferences("TwitPref",0);
 
@@ -94,10 +70,10 @@ public class MainActivity extends AppCompatActivity {
             Configuration configuration = builder.build();
 
             TwitterFactory factory = new TwitterFactory(configuration);
-            twitter = factory.getInstance();
+            Twitter twitter = factory.getInstance();
             TokenPasser.setTwitter(twitter);
             try {
-                requestToken = twitter
+                RequestToken requestToken = twitter
                         .getOAuthRequestToken(TWITTER_CALLBACK_URL);
                 this.startActivity(new Intent(Intent.ACTION_VIEW, Uri
                         .parse(requestToken.getAuthenticationURL())));
