@@ -14,6 +14,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.ListView;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import twitter4j.Status;
@@ -41,6 +42,8 @@ public class Feed extends AppCompatActivity {
     static final String URL_TWITTER_OAUTH_VERIFIER = "oauth_verifier";
     static final String URL_TWITTER_OAUTH_TOKEN = "https://api.twitter.com/oauth/access_token";
 
+    ListView listView;
+    List<FeedListClass> posts =new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,12 +52,10 @@ public class Feed extends AppCompatActivity {
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
+        listView = (ListView) findViewById(R.id.feed_listView);
+
         savePrefsAsync save = new savePrefsAsync();
         save.execute();
-
-
-
-
 
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         assert fab != null;
@@ -197,11 +198,25 @@ public class Feed extends AppCompatActivity {
             // gets Twitter instance with default credentials
             User user = twitter.verifyCredentials();
             List<Status> statuses = twitter.getHomeTimeline();
-            //   System.out.println("Showing @" + user.getScreenName() + "'s home timeline.");
+
             Log.i("feed", "get feed for user: "+ user.getScreenName());
             for (Status status : statuses) {
                 System.out.println("@" + status.getUser().getScreenName() + " - " + status.getText());
+
+                posts.add(new FeedListClass(status.getUser().getName(),status.getText()));
+
             }
+
+            final FeedListAdapter adaptorumuz = new FeedListAdapter(Feed.this, posts);
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    listView.setAdapter(adaptorumuz);
+                }
+            });
+
+
         } catch (TwitterException te) {
             te.printStackTrace();
             // System.out.println("Failed to get timeline: " + te.getMessage());
